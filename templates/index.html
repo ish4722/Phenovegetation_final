@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pheno AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Pheno AI</h1>
+        <button class="login-btn">Login/Sign up</button>
+    </header>
+
+    <section class="intro-section">
+        <div class="intro-content">
+            <h2>Unlock the Power of Your Images with Advanced Vegetation Analysis</h2>
+            <p>
+                Welcome to PhenoAI! Upload your images, choose your options, and let our cutting-edge AI calculate vegetation indices tailored to your needs.
+            </p>
+        </div>
+        <div class="intro-image">
+            <img id="slider-image" src="1.JPG" alt="Vegetation Analysis">
+        </div>
+    </section>
+
+    <section class="upload-section">
+        <h2>Let's Get Started!</h2>
+        <form id="upload-form">
+            <div class="upload-box">
+                <label for="upload-input">Upload Input Images:</label>
+                <input id="upload-input" type="file" name="images" multiple>
+            </div>
+            <div class="calendar-box">
+                <label for="start-date">Start Date:</label>
+                <input type="date" name="start_date" id="start-date" required>
+                <label for="end-date">End Date:</label>
+                <input type="date" name="end_date" id="end-date" required>
+            </div>
+            <div class="remove-images">
+                <label>Remove Images Based on Filters:</label>
+                <label><input type="checkbox" name="filters[]" value="blurry"> Blurry</label>
+                <label><input type="checkbox" name="filters[]" value="snowy"> Snowy</label>
+                <label><input type="checkbox" name="filters[]" value="darkened"> Darkened</label>
+            </div>
+            <div class="mask-selection">
+                <label for="mask-needed">Select Mask Needed:</label>
+                <select id="mask-needed" name="mask_needed">
+                    <option value="deciduous">Deciduous</option>
+                    <option value="coniferous">Coniferous</option>
+                </select>
+            </div>
+            <button type="button" class="generate-btn" id="generate-btn">Generate excel File</button>
+        </form>
+        <div id="response-message" class="response-message"></div>
+    </section>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

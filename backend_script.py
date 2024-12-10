@@ -223,5 +223,4 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
     # Save the data to an Excel file
     df.to_excel("output.xlsx", index=False)
 
-if __name__ == "__main__":
-    main()
+
