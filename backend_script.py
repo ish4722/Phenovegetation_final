@@ -8,6 +8,33 @@ from sklearn.cluster import KMeans
 import random
 import pandas as pd
 
+from tensorflow.keras.utils import register_keras_serializable
+from tensorflow.keras.layers import Layer
+from tensorflow.keras import backend as K
+
+
+# Define and register the FixedDropout layer
+@register_keras_serializable()
+class FixedDropout(Layer):
+    def __init__(self, rate, seed=None, noise_shape=None, **kwargs):
+        super(FixedDropout, self).__init__(**kwargs)
+        self.rate = rate
+        self.seed = seed
+        self.noise_shape = noise_shape
+
+    def build(self, input_shape):
+        super(FixedDropout, self).build(input_shape)
+
+    def call(self, inputs, training=None):
+        if training:
+            return K.dropout(inputs, self.rate, seed=self.seed, noise_shape=self.noise_shape)
+        return inputs
+
+# Register custom activation function
+@register_keras_serializable()
+def swish(x):
+    return x * K.sigmoid(x)
+
 def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
     # Define required variables
     image_dir = img_dir_path  
@@ -76,8 +103,11 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
     retained_images = filter_images_by_user_filters(filtered_images, filters)
 
 
-    # Load the model
-    model = load_model(r"/Users/ishan/Downloads/my_model.h5", compile=False)
+# Load model with the registered swish and FixedDropout
+    model_path = '/Users/ishan/Downloads/my_model-2.h5'
+
+    model = load_model(model_path, custom_objects={'swish': swish, 'FixedDropout': FixedDropout})
+
 
     # selected_masks = []  # List to store the selected masks based on mask_name
 
