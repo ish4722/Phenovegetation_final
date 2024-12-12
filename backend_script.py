@@ -7,7 +7,7 @@ from keras.models import load_model
 from sklearn.cluster import KMeans
 import random
 import pandas as pd
-
+from config import *
 from tensorflow.keras.utils import register_keras_serializable
 from tensorflow.keras.layers import Layer
 from tensorflow.keras import backend as K
@@ -104,7 +104,7 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
 
 
 # Load model with the registered swish and FixedDropout
-    model_path = '/Users/ishan/Downloads/my_model-2.h5'
+    model_path = MODEL_PATH
 
     model = load_model(model_path, custom_objects={'swish': swish, 'FixedDropout': FixedDropout})
 
@@ -189,7 +189,7 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
             ROIs.append(ROI)
 
         # Randomly sample 4 ROIs
-        rois = random.sample(ROIs, 4)
+        rois = random.sample(ROIs,ROI_TO_SAMPLE)
         ROI_image = image.copy()
 
         # Create a list to store the rows of data for the Excel file
