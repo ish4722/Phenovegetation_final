@@ -36,13 +36,29 @@ def swish(x):
     return x * K.sigmoid(x)
 
 def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
+
     # Define required variables
-    image_dir = img_dir_path  
+    # image_dir = img_dir_path  
     start_time = str_time
     end_time = end_tim
     filters = filtrs
     filtered_images = []
     mask_need=mask_name  
+
+    def get_image_files(img_dir_path):
+      image_dir = []
+      try:
+          for dirpath, _, filenames in os.walk(img_dir_path):
+            for file in filenames:
+                if file.lower().endswith('.jpg'):  # Check for .jpg files
+                    file_path = os.path.join(dirpath, file)
+                    image_dir.append(file_path)
+          return image_dir
+      except Exception as e:
+        print(f"Error while traversing directories: {e}")
+        raise
+      
+    image_dir = get_image_files(img_dir_path)
 
     # Apply time filter logic
     for file_name in os.listdir(image_dir):
