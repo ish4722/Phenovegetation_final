@@ -42,7 +42,7 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
     print("CHECKPOINT4")
 
     # Apply time filter logic
-    for file_name in os.listdir(image_dir):
+    for file_name in image_dir:
         try:
             # Extract time from the file name
             file_time = datetime.strptime(file_name[4:], "%Y_%m_%d_%H%M%S.jpg")
@@ -108,6 +108,9 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
     print("CHECKPOINT8")
 
     # selected_masks = []  # List to store the selected masks based on mask_name
+    
+     # Create a list to store the rows of data for the Excel file
+    data = []
 
     for image_path in retained_images:
         # Read the image
@@ -190,8 +193,7 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
         rois = random.sample(ROIs,ROI_TO_SAMPLE)
         ROI_image = image.copy()
 
-        # Create a list to store the rows of data for the Excel file
-        data = []
+       
 
         for r in rois:
             ROI_image[(r[:, 0]), (r[:, 1]), 1] += 100
