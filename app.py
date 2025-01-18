@@ -1,8 +1,7 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_file
 import os
 from datetime import datetime
-import shutil
-import backend_script  
+import backend_script
 
 app = Flask(__name__)
 
@@ -41,8 +40,11 @@ def process_images():
 
         print("HOGYA BADIYAA")
 
-        # Send success response
-        return jsonify({'status': 'success', 'message': 'Processing complete! The results are in output.xlsx.'})
+        # Path to the output Excel file
+        output_path = "output.xlsx"
+
+        # Return the file as a downloadable response
+        return send_file(output_path, as_attachment=True, download_name="output.xlsx")
 
     except Exception as e:
         print(e)

@@ -26,12 +26,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: formData,
             });
 
-            const data = await response.json();
+            // If response is ok, trigger file download
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.style.display = "none";
+                a.href = url;
+                a.download = "output.xlsx"; // Name of the downloaded file
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
 
-            if (data.status === "success") {
                 responseMessage.style.color = "green";
-                responseMessage.innerHTML = `<p>${data.message}</p>`;
+                responseMessage.innerHTML = `<p>Processing complete! Your file is downloading.</p>`;
             } else {
+                const data = await response.json();
                 responseMessage.style.color = "red";
                 responseMessage.innerHTML = `<p>Error: ${data.message}</p>`;
             }
