@@ -39,6 +39,8 @@ def process_images():
         # Call your backend main function
         backend_script.main(upload_dir, start_time, end_time, filters, mask_needed)
 
+        print("HOGYA BADIYAA")
+
         # Send success response
         return jsonify({'status': 'success', 'message': 'Processing complete! The results are in output.xlsx.'})
 

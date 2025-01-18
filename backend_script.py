@@ -50,7 +50,7 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
                 filtered_images.append(os.path.join(image_dir, file_name))
         except ValueError:
             continue
-    print("CHECKPOINT4")
+    print("CHECKPOINT5")
 
     def filter_images_by_user_filters(filtered_images, filters):
 
@@ -97,15 +97,15 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
 
         return retained_images
     
-    print("CHECKPOINT5")
+    print("CHECKPOINT6")
     # Apply user-specified filters
     retained_images = filter_images_by_user_filters(filtered_images, filters)
-    print("CHECKPOINT6")
+    print("CHECKPOINT7")
 
 # Load model with the registered swish and FixedDropout
 
     model = load_model(MODEL_PATH)
-    print("CHECKPOINT7")
+    print("CHECKPOINT8")
 
     # selected_masks = []  # List to store the selected masks based on mask_name
 
