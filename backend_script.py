@@ -8,32 +8,9 @@ from sklearn.cluster import KMeans
 import random
 import pandas as pd
 from config import *
-from tensorflow.keras.utils import register_keras_serializable
-from tensorflow.keras.layers import Layer
-from tensorflow.keras import backend as K
 
 
-# Define and register the FixedDropout layer
-@register_keras_serializable()
-class FixedDropout(Layer):
-    def __init__(self, rate, seed=None, noise_shape=None, **kwargs):
-        super(FixedDropout, self).__init__(**kwargs)
-        self.rate = rate
-        self.seed = seed
-        self.noise_shape = noise_shape
 
-    def build(self, input_shape):
-        super(FixedDropout, self).build(input_shape)
-
-    def call(self, inputs, training=None):
-        if training:
-            return K.dropout(inputs, self.rate, seed=self.seed, noise_shape=self.noise_shape)
-        return inputs
-
-# Register custom activation function
-@register_keras_serializable()
-def swish(x):
-    return x * K.sigmoid(x)
 
 def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
 
@@ -44,6 +21,8 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
     filters = filtrs
     filtered_images = []
     mask_need=mask_name  
+
+    print("CHECKPOINT2")
 
     def get_image_files(img_dir_path):
       image_dir = []
@@ -57,8 +36,10 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
       except Exception as e:
         print(f"Error while traversing directories: {e}")
         raise
-      
+
+    print("CHECKPOINT3")  
     image_dir = get_image_files(img_dir_path)
+    print("CHECKPOINT4")
 
     # Apply time filter logic
     for file_name in os.listdir(image_dir):
@@ -69,6 +50,7 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
                 filtered_images.append(os.path.join(image_dir, file_name))
         except ValueError:
             continue
+    print("CHECKPOINT4")
 
     def filter_images_by_user_filters(filtered_images, filters):
 
@@ -114,16 +96,16 @@ def main(img_dir_path,str_time,end_tim,filtrs,mask_name):
                 retained_images.append(image_path)
 
         return retained_images
-
+    
+    print("CHECKPOINT5")
     # Apply user-specified filters
     retained_images = filter_images_by_user_filters(filtered_images, filters)
-
+    print("CHECKPOINT6")
 
 # Load model with the registered swish and FixedDropout
-    model_path = MODEL_PATH
 
-    model = load_model(model_path, custom_objects={'swish': swish, 'FixedDropout': FixedDropout})
-
+    model = load_model(MODEL_PATH)
+    print("CHECKPOINT7")
 
     # selected_masks = []  # List to store the selected masks based on mask_name
 

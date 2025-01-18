@@ -34,6 +34,8 @@ def process_images():
         start_time = datetime.strptime(start_date, '%Y-%m-%d')
         end_time = datetime.strptime(end_date, '%Y-%m-%d')
 
+        print("CHECKPOINT1")
+
         # Call your backend main function
         backend_script.main(upload_dir, start_time, end_time, filters, mask_needed)
 
