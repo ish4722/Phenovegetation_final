@@ -24,6 +24,7 @@ def process_images():
         # Create a directory for uploaded images
         upload_dir = "uploaded_images"
         os.makedirs(upload_dir, exist_ok=True)
+        absolute_path = os.path.abspath(upload_dir)
 
         # Save images to the directory
         for file in files:
@@ -36,7 +37,7 @@ def process_images():
         print("CHECKPOINT1")
 
         # Call your backend main function
-        backend_script.main(upload_dir, start_time, end_time, filters, mask_needed)
+        backend_script.main(absolute_path, start_time, end_time, filters, mask_needed)
 
         print("HOGYA BADIYAA")
 
