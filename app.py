@@ -15,20 +15,16 @@ def index():
 def process_images():
     try:
         # Get files and form data
-        files = request.files.getlist('images')
+        directory = request.form['directory']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
         filters = request.form.getlist('filters[]')  # List of filters
         mask_needed = request.form['mask_needed']  # Deciduous or Coniferous
 
-        # Create a directory for uploaded images
-        upload_dir = "uploaded_images"
-        os.makedirs(upload_dir, exist_ok=True)
-        absolute_path = os.path.abspath(upload_dir)
+        # Ensure the directory exists
+        if not os.path.exists(directory):
+            return jsonify({'status': 'error', 'message': 'Provided directory does not exist.'})
 
-        # Save images to the directory
-        for file in files:
-            file.save(os.path.join(upload_dir, file.filename))
 
         # Convert date strings to datetime objects
         start_time = datetime.strptime(start_date, '%Y-%m-%d')
@@ -37,7 +33,7 @@ def process_images():
         print("CHECKPOINT1")
 
         # Call your backend main function
-        backend_script.main(absolute_path, start_time, end_time, filters, mask_needed)
+        backend_script.main(directory, start_time, end_time, filters, mask_needed)
 
         print("HOGYA BADIYAA")
 
