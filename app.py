@@ -16,8 +16,8 @@ def process_images():
     try:
         # Get files and form data
         files = request.files.getlist('images')
-        start_date = request.form['start_date']
-        end_date = request.form['end_date']
+        start_time = request.form['start_time']  # Time input as HH:mm:ss
+        end_time = request.form['end_time']  # Time input as HH:mm:ss
         filters = request.form.getlist('filters[]')  # List of filters
         mask_needed = request.form['mask_needed']  # Deciduous or Coniferous
 
@@ -29,16 +29,17 @@ def process_images():
         for file in files:
             file.save(os.path.join(upload_dir, file.filename))
 
-        # Convert date strings to datetime objects
-        start_time = datetime.strptime(start_date, '%Y-%m-%d')
-        end_time = datetime.strptime(end_date, '%Y-%m-%d')
+        # Convert time strings to datetime.time objects (in 24-hour format)
+        start_time = datetime.strptime(start_time, '%H:%M:%S').time()
+        end_time = datetime.strptime(end_time, '%H:%M:%S').time()
 
-        print("CHECKPOINT1")
+        print("Start Time:", start_time)
+        print("End Time:", end_time)
+
+        upload_dir_path='/Users/ishan/Phenovegetation_final-2/uploaded_images'
 
         # Call your backend main function
-        backend_script.main(upload_dir, start_time, end_time, filters, mask_needed)
-
-        print("HOGYA BADIYAA")
+        backend_script.main(upload_dir_path, start_time, end_time, filters, mask_needed)
 
         # Path to the output Excel file
         output_path = "output.xlsx"

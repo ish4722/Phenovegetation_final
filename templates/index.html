@@ -32,12 +32,14 @@
                 <label for="upload-input">Upload Input Images:</label>
                 <input id="upload-input" type="file" name="images" multiple>
             </div>
-            <div class="calendar-box">
-                <label for="start-date">Start Date:</label>
-                <input type="date" name="start_date" id="start-date" required>
-                <label for="end-date">End Date:</label>
-                <input type="date" name="end_date" id="end-date" required>
+            <div class="time-box">
+                <label for="start-time">Start Time (24-hour format - HH:mm:ss):</label>
+                <input type="text" name="start_time" id="start-time" placeholder="HH:mm:ss" required pattern="\d{2}:\d{2}:\d{2}">
+                
+                <label for="end-time">End Time (24-hour format - HH:mm:ss):</label>
+                <input type="text" name="end_time" id="end-time" placeholder="HH:mm:ss" required pattern="\d{2}:\d{2}:\d{2}">
             </div>
+            
             <div class="remove-images">
                 <label>Remove Images Based on Filters:</label>
                 <label><input type="checkbox" name="filters[]" value="blurry"> Blurry</label>
@@ -51,7 +53,7 @@
                     <option value="coniferous">Coniferous</option>
                 </select>
             </div>
-            <button type="button" class="generate-btn" id="generate-btn">Generate excel File</button>
+            <button type="button" class="generate-btn" id="generate-btn">Generate Excel File</button>
         </form>
         <div id="response-message" class="response-message"></div>
     </section>
