@@ -1,107 +1,276 @@
-body {
-    font-family: 'Lato', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #1e90ff;
-    color: white;
-}
-
-header h1 {
-    font-size: 24px;
-}
-
-.login-btn {
-    background-color: white;
-    color: #1e90ff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.intro-section {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 30px;
-}
-
-.intro-content {
-    max-width: 50%;
-}
-
-.intro-content h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-
-.intro-image img {
-    width: 300px;
-    height: auto;
-    border-radius: 10px;
-}
-
-.upload-section {
-    padding: 30px;
-    background-color: white;
-    border-radius: 10px;
-    margin: 20px auto;
-    max-width: 600px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.upload-section h2 {
-    font-size: 24px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.upload-box, .calendar-box, .remove-images, .mask-selection {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input[type="file"], input[type="date"], select {
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .v88_47 {
     width: 100%;
-    padding: 8px;
+    height: 1883px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .v88_2 {
+    width: 100%;
+    height: 1024px;
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .v88_3 {
+    width: 100%;
+    height: 100%;
+    background: url("../images/v88_3.png");
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .v88_4, .v88_5 {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .v88_4 {
+    background: rgba(27,40,27,1);
+    opacity: 0.2;
+  }
+  
+  .v88_5 {
+    background: black;
+    opacity: 0.6;
+  }
+  
+  .v88_6 {
+    color: white;
+    position: absolute;
+    top: 248px;
+    left: 72px;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 280px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .v89_51 {
+    color: white;
+    position: absolute;
+    top: 572px;
+    left: 92px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    font-size: 40px;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .v89_75 {
+    color: white;
+    position: absolute;
+    top: 767px;
+    left: 472px;
+    font-family: 'Lora', serif;
+    font-weight: bold;
+    font-size: 70px;
+    text-align: center;
+    width: 570px;
+  }
+  
+  .v88_14 {
+    width: 100%;
+    height: 1024px;
+    background: white;
+    position: absolute;
+    top: 859px;
+    left: 0;
+    overflow: hidden;
+  }
+  
+  .v89_53 {
+    width: 1000px;
+    height: 650px;
+    position: absolute;
+    top: 137px;
+    left: 193px;
+    overflow: hidden;
+  }
+  
+  
+  
+  .v89_55 {
+    width: 514px;
+    height: 91px;
+    position: absolute;
+    top: 498px;
+    left: 246px;
+  }
+  
+  .v89_56 {
+    width: 514px;
+    height: 91px;
+    background: rgba(76,135,66,1);
+    border-radius: 45px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .v89_57 {
+    width: 514px;
+    color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 48px;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .remove-images {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .remove-images label {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  .remove-images input[type="checkbox"] {
+    margin-right: 10px;
+  }
+  
+  .response-message {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .upload-box input[type="file"] {
+    display: none;
+  }
+  
+  .v89_72 {
+    color: rgba(77,135,67,1);
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  /* [Previous CSS remains the same] */
+
+.mask-selection {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.mask-selection select {
+    width: 100%;
+    padding: 10px;
     font-size: 16px;
-    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-.generate-btn {
-    background-color: #1e90ff;
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(76,135,66,1);
     color: white;
-    border: none;
-    padding: 10px 15px;
     border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
     font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.generate-btn:hover {
-    background-color: #0066cc;
-}
-
-.response-message {
-    font-size: 16px;
-    margin-top: 20px;
     text-align: center;
+    cursor: pointer;
+}
+
+.custom-file-label:hover {
+    background-color: rgba(60,110,50,1);
+}
+
+#upload-input {
+    display: none; /* Keeps the input hidden */
+}
+.filters label {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    font-size: 16px;
+}
+
+.filters input[type="checkbox"] {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.time-section {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.time-label {
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.time-input {
+    font-size: 14px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 0 10px;
+    width: 120px;
+}
+
+
+.mask-selection {
+    margin: 20px 0;
+    text-align: center;
+}
+
+.mask-selection select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: rgba(76,135,66,1);
+    color: white;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.custom-file-label:hover {
+    background-color: rgba(60,110,50,1);
+}
+
+#upload-input {
+    display: none; /* Keeps the input hidden */
 }

@@ -154,9 +154,9 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
         threshold_area = 20000 * (H * W / 1200000)
         ROI_area = int(threshold_area / (scale_h * scale_w))
 
-        # if len(points) < ROI_area:
-        #     print(f"CHECKPOINT: Not enough points for clustering in {image_path}")
-        #     continue
+        if len(points) < ROI_area:
+            print(f"CHECKPOINT: Not enough points for clustering in {image_path}")
+            continue
 
         n_ROIs = max(1, points.shape[0] // ROI_area)
         points = np.array(points, dtype=np.float32)
@@ -175,7 +175,7 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
         print(f"CHECKPOINT10: Generated {len(ROIs)} ROIs for image {image_path}")
 
         if ROIs:
-            for r in random.sample(ROIs, min(len(ROIs), 4)):
+            for r in random.sample(ROIs, min(len(ROIs), ROI_TO_SAMPLE)):
                 r = r.astype(int)
                 red = np.mean(image[r[:, 0], r[:, 1], 0])
                 green = np.mean(image[r[:, 0], r[:, 1], 1])
