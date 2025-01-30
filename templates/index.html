@@ -25,9 +25,24 @@
                 <form id="upload-form">
                     <div class="time-section">
                         <span class="v89_70">Enter Time Range:</span>
-                        <input type="text" id="start-time" name="start_time" placeholder="HH:mm:ss" class="v89_68" required pattern="\d{2}:\d{2}:\d{2}">
+                        
+                        <div class="time-inputs">
+                            <input type="number" id="start-hour" name="start_hour" min="0" max="23" placeholder="HH" required>
+                            <span>:</span>
+                            <input type="number" id="start-minute" name="start_minute" min="0" max="59" placeholder="MM" required>
+                            <span>:</span>
+                            <input type="number" id="start-second" name="start_second" min="0" max="59" placeholder="SS" required>
+                        </div>
+                    
                         <span class="v89_69">to</span>
-                        <input type="text" id="end-time" name="end_time" placeholder="HH:mm:ss" class="v89_67" required pattern="\d{2}:\d{2}:\d{2}">
+                    
+                        <div class="time-inputs">
+                            <input type="number" id="end-hour" name="end_hour" min="0" max="23" placeholder="HH" required>
+                            <span>:</span>
+                            <input type="number" id="end-minute" name="end_minute" min="0" max="59" placeholder="MM" required>
+                            <span>:</span>
+                            <input type="number" id="end-second" name="end_second" min="0" max="59" placeholder="SS" required>
+                        </div>
                     </div>
                     
                     

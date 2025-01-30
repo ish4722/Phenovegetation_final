@@ -52,7 +52,21 @@
     background: black;
     opacity: 0.6;
   }
-  
+  .time-inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.time-inputs input {
+    width: 50px;
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
   .v88_6 {
     color: white;
     position: absolute;

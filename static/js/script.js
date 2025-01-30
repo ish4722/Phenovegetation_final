@@ -1,36 +1,27 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const uploadForm = document.getElementById("upload-form");
     const generateBtn = document.getElementById("generate-btn");
     const responseMessage = document.getElementById("response-message");
-    const uploadInput = document.getElementById("upload-input");
-    const fileChosen = document.getElementById("file-chosen");
-
-    // Update file-chosen text when files are selected
-    uploadInput.addEventListener("change", function () {
-        if (this.files.length > 0) {
-            fileChosen.textContent = `${this.files.length} file(s) chosen`;
-        } else {
-            fileChosen.textContent = "No files chosen";
-        }
-    });
-
-    
+    const uploadForm = document.getElementById("upload-form"); // Make sure form exists
 
     generateBtn.addEventListener("click", async () => {
-        // Clear previous response message
         responseMessage.innerHTML = "";
         responseMessage.style.display = "none";
 
-        // Collect form data
-        const formData = new FormData(uploadForm);
+        // Get values from number inputs (if using number fields)
+        const startHour = document.getElementById("start-hour").value.padStart(2, "0");
+        const startMinute = document.getElementById("start-minute").value.padStart(2, "0");
+        const startSecond = document.getElementById("start-second").value.padStart(2, "0");
 
-        // Get start and end times
-        const startTime = document.getElementById("start-time").value;
-        const endTime = document.getElementById("end-time").value;
+        const endHour = document.getElementById("end-hour").value.padStart(2, "0");
+        const endMinute = document.getElementById("end-minute").value.padStart(2, "0");
+        const endSecond = document.getElementById("end-second").value.padStart(2, "0");
 
-        // Validate time format (HH:mm:ss)
+        // Format as HH:mm:ss
+        const startTime = `${startHour}:${startMinute}:${startSecond}`;
+        const endTime = `${endHour}:${endMinute}:${endSecond}`;
+
+        // Validate time format (24-hour HH:mm:ss)
         const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
-
         if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
             responseMessage.style.display = "block";
             responseMessage.style.color = "red";
@@ -45,7 +36,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Ensure form exists before processing
+        if (!uploadForm) {
+            console.error("Form not found!");
+            return;
+        }
+
         // Ensure at least one file is uploaded
+        const formData = new FormData(uploadForm);
         const files = formData.getAll("images");
         if (files.length === 0) {
             responseMessage.style.display = "block";
