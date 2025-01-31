@@ -27,18 +27,6 @@ def index():
 def process_images():
     try:
         # Get files and form data
-<<<<<<< HEAD
-        directory = request.form['directory']
-        start_date = request.form['start_date']
-        end_date = request.form['end_date']
-        filters = request.form.getlist('filters[]')  # List of filters
-        mask_needed = request.form['mask_needed']  # Deciduous or Coniferous
-
-        # Ensure the directory exists
-        if not os.path.exists(directory):
-            return jsonify({'status': 'error', 'message': 'Provided directory does not exist.'})
-
-=======
         files = request.files.getlist('images')
         start_time = request.form['start_time']  # Time input as HH:mm:ss
         end_time = request.form['end_time']  # Time input as HH:mm:ss
@@ -51,7 +39,6 @@ def process_images():
         # Save images to the directory
         for file in files:
             file.save(os.path.join(UPLOAD_DIR, file.filename))
->>>>>>> 34cff043f265f83bd6e03eeffc99c3c0848de148
 
         # Convert time strings to datetime.time objects (in 24-hour format)
         start_time = datetime.strptime(start_time, '%H:%M:%S').time()
@@ -61,16 +48,7 @@ def process_images():
         print("End Time:", end_time)
 
         # Call your backend main function
-<<<<<<< HEAD
-        backend_script.main(directory, start_time, end_time, filters, mask_needed)
-
-        print("HOGYA BADIYAA")
-
-        # Path to the output Excel file
-        output_path = "output.xlsx"
-=======
         backend_script.main(UPLOAD_DIR, start_time, end_time, filters, mask_needed)
->>>>>>> 34cff043f265f83bd6e03eeffc99c3c0848de148
 
         # Return the file as a downloadable response
         return send_file(OUTPUT_FILE, as_attachment=True, download_name="output.xlsx")
