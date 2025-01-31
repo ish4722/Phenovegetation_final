@@ -1,7 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const uploadForm = document.getElementById("upload-form");
     const generateBtn = document.getElementById("generate-btn");
     const responseMessage = document.getElementById("response-message");
-    const uploadForm = document.getElementById("upload-form"); // Make sure form exists
+    const uploadInput = document.getElementById("upload-input");
+    const fileChosen = document.getElementById("file-chosen");
+
+    // Update file-chosen text when files are selected
+    uploadInput.addEventListener("change", function () {
+        if (this.files.length > 0) {
+            fileChosen.textContent = `${this.files.length} file(s) chosen`;
+        } else {
+            fileChosen.textContent = "No files chosen";
+        }
+    });
 
     generateBtn.addEventListener("click", async () => {
         responseMessage.innerHTML = "";
@@ -41,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Form not found!");
             return;
         }
+        
 
         // Ensure at least one file is uploaded
         const formData = new FormData(uploadForm);
