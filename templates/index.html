@@ -4,25 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pheno AI</title>
+    <link href="https://fonts.googleapis.com/css?family=Lora&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
 </head>
 <body>
-    <header>
-        <h1>Pheno AI</h1>
-        <button class="login-btn">Login/Sign up</button>
-    </header>
-
-    <section class="intro-section">
-        <div class="intro-content">
-            <h2>Unlock the Power of Your Images with Advanced Vegetation Analysis</h2>
-            <p>
-                Welcome to PhenoAI! Upload your images, choose your options, and let our cutting-edge AI calculate vegetation indices tailored to your needs.
-            </p>
+    <div class="v88_47">
+        <div class="v88_2">
+            <div class="v88_3"></div>
+            <div class="v88_4"></div>
+            <div class="v88_5"></div>
+            <span class="v88_6">Pheno AI</span>
+            <span class="v89_51">Simply upload your images, and our cutting-edge machine learning algorithms will calculate detailed vegetation indices tailored to your needs.</span>
+            <span class="v89_75">Let's get started!</span>
         </div>
-        <div class="intro-image">
-            <img id="slider-image" src="1.JPG" alt="Vegetation Analysis">
+        <div class="v88_14">
+            <div class="v89_53">
+                <form id="upload-form">
+                    <div class="time-section">
+                        <span class="v89_70">Enter Time Range:</span>
+                        
+                        <div class="time-inputs">
+                            <input type="number" id="start-hour" name="start_hour" min="0" max="23" placeholder="HH" required>
+                            <span>:</span>
+                            <input type="number" id="start-minute" name="start_minute" min="0" max="59" placeholder="MM" required>
+                            <span>:</span>
+                            <input type="number" id="start-second" name="start_second" min="0" max="59" placeholder="SS" required>
+                        </div>
+                    
+                        <span class="v89_69">to</span>
+                    
+                        <div class="time-inputs">
+                            <input type="number" id="end-hour" name="end_hour" min="0" max="23" placeholder="HH" required>
+                            <span>:</span>
+                            <input type="number" id="end-minute" name="end_minute" min="0" max="59" placeholder="MM" required>
+                            <span>:</span>
+                            <input type="number" id="end-second" name="end_second" min="0" max="59" placeholder="SS" required>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="filters">
+                        <span class="v89_65">Remove Particular kind of images:</span>
+                        <label><input type="checkbox" name="filters[]" value="blurry"> Blurry</label>
+                        <label><input type="checkbox" name="filters[]" value="snowy"> Snowy</label>
+                        <label><input type="checkbox" name="filters[]" value="darkened"> Darkened</label>
+                    </div>
+                    <div class="mask-selection">
+                        <select name="mask_needed" id="mask-needed">
+                            <option value="deciduous">Deciduous</option>
+                            <option value="coniferous">Coniferous</option>
+                        </select>
+                    </div>
+                    <div class="upload-box">
+                        <span class="v89_71">Upload the input Images:</span>
+                        <label for="upload-input" class="custom-file-label v89_72">Choose Files</label>
+                        <input type="file" name="images" id="upload-input" multiple>
+                        <span id="file-chosen" class="v89_73">No files chosen</span>
+                    </div>
+                    <div class="v89_55">
+                        <div class="v89_56"></div>
+                        <button type="button" id="generate-btn" class="v89_57">Generate Excel File</button>
+                    </div>
+                </form>
+                <div id="response-message" class="response-message"></div>
+            </div>
         </div>
+<<<<<<< HEAD
     </section>
 
     <section class="upload-section">
@@ -56,6 +106,9 @@
         <div id="response-message" class="response-message"></div>
     </section>
 
+=======
+    </div>
+>>>>>>> 34cff043f265f83bd6e03eeffc99c3c0848de148
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
