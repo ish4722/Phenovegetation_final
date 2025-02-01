@@ -44,8 +44,6 @@ def process_images():
         start_time = datetime.strptime(start_time, '%H:%M:%S').time()
         end_time = datetime.strptime(end_time, '%H:%M:%S').time()
 
-        print("Start Time:", start_time)
-        print("End Time:", end_time)
 
         # Call your backend main function
         backend_script.main(UPLOAD_DIR, start_time, end_time, filters, mask_needed)

@@ -1,11 +1,11 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from config import *
 
-n_classes = 3
+
 # Define the model using PyTorch
 class SimpleCNN(nn.Module):
-    def __init__(self, n_classes=3):
+    def __init__(self, n_classes=n_class):
         super(SimpleCNN, self).__init__()
         self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1)
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2)
