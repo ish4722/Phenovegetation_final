@@ -84,9 +84,31 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
                 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
                 lower_snow = np.array([0, 0, 180], dtype=np.uint8)
                 upper_snow = np.array([180, 25, 255], dtype=np.uint8)
+                
+                # Get the dimensions of the image
+                height, width = image.shape[:2]
+                
+                # Define the region of interest (ROI)
+                # Bottom half of the image (height-wise)
+                start_row = int(height / 2)  # Start from the middle of the image height
+                end_row = height  # End at the bottom of the image
+                
+                # Right one-third of the image (width-wise)
+                start_col = int(2 * width / 3)  # Start from 2/3 of the image width
+                end_col = width  # End at the right edge of the image
+                
+                # Create a mask for the bottom-right corner
+                mask_bottom_right = np.zeros((height, width), dtype=np.uint8)
+                mask_bottom_right[start_row:end_row, start_col:end_col] = 255  # Set the ROI to white (255)
+                
+                # Apply the snow detection only to the bottom-right corner
                 snow_mask = cv2.inRange(hsv, lower_snow, upper_snow)
-                snowy_percentage = np.sum(snow_mask == 255) / snow_mask.size
-                if snowy_percentage > 0.0053:
+                snow_mask = cv2.bitwise_and(snow_mask, mask_bottom_right)  # Apply the ROI mask
+                
+                # Calculate the percentage of snow in the bottom-right corner
+                snowy_percentage = np.sum(snow_mask == 255) / np.sum(mask_bottom_right == 255)
+
+                if snowy_percentage > 0.00093:
                     remove = True
 
             if not remove:
