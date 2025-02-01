@@ -48,18 +48,17 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
             # Combine date and time into one datetime object
             combined_datetime = datetime.combine(file_date, file_time)
 
-            # Apply the time filter
             if start_time <= file_time <= end_time:
-                filtered_images.append((file_name, file_time))
+                filtered_images.append((file_name, combined_datetime))  # Store full datetime
         except ValueError:
             continue
-    filtered_images.sort(key=lambda x: x[1])
+    filtered_images.sort(key=lambda x: x[1])  # Sort by full datetime
 
     print(f"CHECKPOINT4: Filtered {len(filtered_images)} images by time")
 
     def filter_images_by_user_filters(filtered_images, filters):
         retained_images = []
-        for image_path, file_time in filtered_images:
+        for image_path, combined_datetime in filtered_images:
             image = cv2.imread(image_path)
             if image is None:
                 print(f"CHECKPOINT4.1: Failed to read image {image_path}")
@@ -91,7 +90,7 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
                     remove = True
 
             if not remove:
-                retained_images.append((image_path, file_time))
+                retained_images.append((image_path, combined_datetime))
 
         print(f"CHECKPOINT5: Retained {len(retained_images)} images after user filters")
         return retained_images
@@ -99,15 +98,14 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
     retained_images = filter_images_by_user_filters(filtered_images, filters)
     print("CHECKPOINT6: Filters applied, starting model loading")
 
-    # Load the model
-    model = SimpleCNN()  # Replace with your actual model class
+    model = SimpleCNN()
     model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
-    model.eval()  # Set the model to evaluation mode
+    model.eval()
 
     print("Model loaded successfully!")
     data = []
 
-    for idx, (image_path, file_time) in enumerate(retained_images):
+    for idx, (image_path, combined_datetime) in enumerate(retained_images):
         print(f"CHECKPOINT8: Processing image {idx + 1}/{len(retained_images)}: {image_path}")
         image = cv2.imread(image_path)
         if image is None:
@@ -115,37 +113,30 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
             continue
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = image / 255.0  # Normalize the image to [0, 1]
+        image = image / 255.0
 
-        # Reinitialize variables for each image
-        brightness = darkness = contrast = grR = rbR = gbR = GRVI = exG = VCI = None
-        red = green = blue = rcc = gcc = bcc = None
-
-        # Calculate brightness, darkness, and contrast
+        # Initialize variables
         brightness = np.mean(image)
         darkness = np.min(image)
         contrast = np.max(image) - np.min(image)
 
-        # Calculate ratios
-        grR = np.mean(image[:, :, 1]) / np.mean(image[:, :, 0])
-        rbR = np.mean(image[:, :, 0]) / np.mean(image[:, :, 2])
-        gbR = np.mean(image[:, :, 1]) / np.mean(image[:, :, 2])
+        grR = np.mean(image[:, :, 1]) / (np.mean(image[:, :, 0]) + 1e-10)
+        rbR = np.mean(image[:, :, 0]) / (np.mean(image[:, :, 2]) + 1e-10)
+        gbR = np.mean(image[:, :, 1]) / (np.mean(image[:, :, 2]) + 1e-10)
 
-        # Vegetation indices
-        GRVI = (np.mean(image[:, :, 1]) - np.mean(image[:, :, 0])) / (np.mean(image[:, :, 1]) + np.mean(image[:, :, 0]) + 1e-6)
+        GRVI = (np.mean(image[:, :, 1]) - np.mean(image[:, :, 0])) / (np.mean(image[:, :, 1]) + np.mean(image[:, :, 0]) + 1e-10)
         exG = 2 * np.mean(image[:, :, 1]) - np.mean(image[:, :, 0]) - np.mean(image[:, :, 2])
-        VCI = (np.mean(image[:, :, 1]) - np.min(image[:, :, 1])) / (np.max(image[:, :, 1]) - np.min(image[:, :, 1]) + 1e-6)
+        VCI = (np.mean(image[:, :, 1]) - np.min(image[:, :, 1])) / (np.max(image[:, :, 1]) - np.min(image[:, :, 1]) + 1e-10)
 
-        # Process image for the mask
         img = cv2.resize(image, (256, 256))
-        img = np.transpose(img, (2, 0, 1))  # Convert to (C, H, W)
-        img = np.expand_dims(img, axis=0)  # Add batch dimension
-        img = torch.tensor(img, dtype=torch.float32)  # Convert to tensor
+        img = np.transpose(img, (2, 0, 1))
+        img = np.expand_dims(img, axis=0)
+        img = torch.tensor(img, dtype=torch.float32)
 
         with torch.no_grad():
-            output = model(img)  # Model prediction
-            probs = torch.softmax(output, dim=1)  # Softmax along channel axis
-            mask = torch.argmax(probs, dim=1).squeeze(0)  # Select class with the highest probability
+            output = model(img)
+            probs = torch.softmax(output, dim=1)
+            mask = torch.argmax(probs, dim=1).squeeze(0)
 
         if mask_need == "coniferous":
             selected_mask = (mask == 1).numpy()
@@ -183,47 +174,103 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
 
         print(f"CHECKPOINT10: Generated {len(ROIs)} ROIs for image {image_path}")
 
+        # Initialize color metrics
+        red = green = blue = rcc = gcc = bcc = None
+        rcc_std = gcc_std = bcc_std = None
+        rcc_percentiles = gcc_percentiles = bcc_percentiles = None
+
         if ROIs:
-            for r in random.sample(ROIs, min(len(ROIs), ROI_TO_SAMPLE)):
+            # Process a random sample of ROIs
+            sampled_ROIs = random.sample(ROIs, min(len(ROIs), ROI_TO_SAMPLE))
+            
+            # Lists to store values across all sampled ROIs
+            all_rcc = []
+            all_gcc = []
+            all_bcc = []
+            
+            for r in sampled_ROIs:
                 r = r.astype(int)
-                red = np.mean(image[r[:, 0], r[:, 1], 0])
-                green = np.mean(image[r[:, 0], r[:, 1], 1])
-                blue = np.mean(image[r[:, 0], r[:, 1], 2])
-                rcc = red / (red + green + blue)
-                gcc = green / (red + green + blue)
-                bcc = blue / (red + green + blue)
-                rcc_std = np.std(red / (red + green + blue))
-                gcc_std = np.std(green / (red + green + blue))
-                bcc_std = np.std(blue / (red + green + blue))
+                
+                # Get RGB values for all pixels in the ROI
+                roi_red = image[r[:, 0], r[:, 1], 0]
+                roi_green = image[r[:, 0], r[:, 1], 1]
+                roi_blue = image[r[:, 0], r[:, 1], 2]
+                
+                # Calculate chromatic coordinates for each pixel
+                total = roi_red + roi_green + roi_blue + 1e-10
+                roi_rcc = roi_red / total
+                roi_gcc = roi_green / total
+                roi_bcc = roi_blue / total
+                
+                # Append values to lists
+                all_rcc.extend(roi_rcc)
+                all_gcc.extend(roi_gcc)
+                all_bcc.extend(roi_bcc)
+            
+            # Convert lists to numpy arrays for calculations
+            all_rcc = np.array(all_rcc)
+            all_gcc = np.array(all_gcc)
+            all_bcc = np.array(all_bcc)
+            
+            # Calculate means
+            red = np.mean(roi_red)
+            green = np.mean(roi_green)
+            blue = np.mean(roi_blue)
+            rcc = np.mean(all_rcc)
+            gcc = np.mean(all_gcc)
+            bcc = np.mean(all_bcc)
+            
+            # Calculate standard deviations
+            rcc_std = np.std(all_rcc)
+            gcc_std = np.std(all_gcc)
+            bcc_std = np.std(all_bcc)
+            
+            # Calculate percentiles
+            percentiles = [5, 10, 25, 50, 75, 90, 95]
+            rcc_percentiles = np.percentile(all_rcc, percentiles)
+            gcc_percentiles = np.percentile(all_gcc, percentiles)
+            bcc_percentiles = np.percentile(all_bcc, percentiles)
 
         else:
             print(f"CHECKPOINT: No valid ROIs found in {image_path}")
-            red = green = blue = rcc = gcc = bcc = None  # Default to None if no ROIs are found
+            # All metrics remain None
 
-        # Correctly calculate DoY and use image-specific datetime values
-        
         file_date = combined_datetime.date()
+        file_time = combined_datetime.time()
         doy = combined_datetime.timetuple().tm_yday
+        
+        clean_file_name = os.path.basename(image_path)
 
-        clean_file_name = image_path.replace("/content/08/", "")
         row = [
             clean_file_name,
-            combined_datetime.strftime('%H:%M:%S'),
+            file_time.strftime('%H:%M:%S'),
             file_date.strftime('%Y-%m-%d'),
             doy,
             red, green, blue,
             rcc, gcc, bcc,
-            rcc_std, gcc_std, bcc_std,
-            np.percentile(rcc, 5), np.percentile(gcc, 5), np.percentile(bcc, 5),
-            np.percentile(rcc, 10), np.percentile(gcc, 10), np.percentile(bcc, 10),
-            np.percentile(rcc, 25), np.percentile(gcc, 25), np.percentile(bcc, 25),
-            np.percentile(rcc, 50), np.percentile(gcc, 50), np.percentile(bcc, 50),
-            np.percentile(rcc, 75), np.percentile(gcc, 75), np.percentile(bcc, 75),
-            np.percentile(rcc, 90), np.percentile(gcc, 90), np.percentile(bcc, 90),
-            np.percentile(rcc, 95), np.percentile(gcc, 95), np.percentile(bcc, 95),
+            rcc_std, gcc_std, bcc_std
+        ]
+        
+        # Add percentiles if they exist
+        if rcc_percentiles is not None:
+            row.extend([
+                rcc_percentiles[0], gcc_percentiles[0], bcc_percentiles[0],  # 5th
+                rcc_percentiles[1], gcc_percentiles[1], bcc_percentiles[1],  # 10th
+                rcc_percentiles[2], gcc_percentiles[2], bcc_percentiles[2],  # 25th
+                rcc_percentiles[3], gcc_percentiles[3], bcc_percentiles[3],  # 50th
+                rcc_percentiles[4], gcc_percentiles[4], bcc_percentiles[4],  # 75th
+                rcc_percentiles[5], gcc_percentiles[5], bcc_percentiles[5],  # 90th
+                rcc_percentiles[6], gcc_percentiles[6], bcc_percentiles[6]   # 95th
+            ])
+        else:
+            row.extend([None] * 21)  # Add None for all percentiles
+        
+        # Add remaining metrics
+        row.extend([
             brightness, darkness, contrast,
             grR, rbR, gbR, GRVI, exG, VCI
-        ]
+        ])
+        
         data.append(row)
 
     print(f"CHECKPOINT11: Completed processing all images, saving data")
@@ -236,8 +283,9 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
     ]
 
     df = pd.DataFrame(data, columns=columns)
-    print("data loaded")
-
+    df['datetime'] = pd.to_datetime(df['Date'] + ' ' + df['time'])
+    df = df.sort_values('datetime')
+    df = df.drop('datetime', axis=1)
     df.to_excel("output.xlsx", index=False)
 
     print("CHECKPOINT12: Data saved to output.xlsx successfully")
