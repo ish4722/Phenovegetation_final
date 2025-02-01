@@ -2,12 +2,12 @@ import os
 from datetime import datetime
 import cv2
 import numpy as np
-import tensorflow as tf
-from keras.models import load_model
+import torch
 from sklearn.cluster import KMeans
 import random
 import pandas as pd
 from config import *
+from architecture import SimpleCNN
 
 def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
     start_time = str_time
@@ -50,7 +50,7 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
 
             # Apply the time filter
             if start_time <= file_time <= end_time:
-                filtered_images.append((file_name,file_time))
+                filtered_images.append((file_name, file_time))
         except ValueError:
             continue
     filtered_images.sort(key=lambda x: x[1])
@@ -99,8 +99,12 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
     retained_images = filter_images_by_user_filters(filtered_images, filters)
     print("CHECKPOINT6: Filters applied, starting model loading")
 
-    model = load_model(MODEL_PATH)
-    print("CHECKPOINT7: Model loaded successfully")
+    # Load the model
+    model = SimpleCNN()  # Replace with your actual model class
+    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
+    model.eval()  # Set the model to evaluation mode
+
+    print("Model loaded successfully!")
     data = []
 
     for idx, (image_path, file_time) in enumerate(retained_images):
@@ -134,24 +138,29 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
 
         # Process image for the mask
         img = cv2.resize(image, (256, 256))
-        img = np.expand_dims(img, axis=0)
+        img = np.transpose(img, (2, 0, 1))  # Convert to (C, H, W)
+        img = np.expand_dims(img, axis=0)  # Add batch dimension
+        img = torch.tensor(img, dtype=torch.float32)  # Convert to tensor
 
-        mask = model.predict(img, verbose=0) > 0.5
+        with torch.no_grad():
+            output = model(img)  # Model prediction
+            probs = torch.softmax(output, dim=1)  # Softmax along channel axis
+            mask = torch.argmax(probs, dim=1).squeeze(0)  # Select class with the highest probability
 
         if mask_need == "coniferous":
-            selected_mask = mask[..., 1].squeeze()
+            selected_mask = (mask == 1).numpy()
         elif mask_need == "deciduous":
-            selected_mask = mask[..., 0].squeeze()
+            selected_mask = (mask == 0).numpy()
         else:
             raise ValueError(f"Invalid mask_name: {mask_need}")
 
-        points = np.argwhere(selected_mask > 0.9)
+        points = np.argwhere(selected_mask>0.5)
         print(f"CHECKPOINT9: Found {len(points)} points in the selected mask")
 
         H, W, _ = image.shape
         scale_h = H / 255
         scale_w = W / 255
-        threshold_area = 20000 * (H * W / 1200000)
+        threshold_area = 2000 * (H * W / 1200000)
         ROI_area = int(threshold_area / (scale_h * scale_w))
 
         if len(points) < ROI_area:
@@ -227,6 +236,7 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
     ]
 
     df = pd.DataFrame(data, columns=columns)
+    print("data loaded")
 
     df.to_excel("output.xlsx", index=False)
 
