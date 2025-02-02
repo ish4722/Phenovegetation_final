@@ -121,7 +121,11 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
     print("CHECKPOINT6: Filters applied, starting model loading")
 
     model = SimpleCNN()
-    model.load_state_dict(torch.load(MODEL_PATH, map_location=torch.device('cpu')))
+    if(mask_need == "rice" or "wheat"):
+        model.load_state_dict(torch.load(MODEL_PATH_crop, map_location=torch.device('cpu')))
+    else:
+        model.load_state_dict(torch.load(MODEL_PATH_forest, map_location=torch.device('cpu')))
+
     model.eval()
 
     print("Model loaded successfully!")

@@ -4,6 +4,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const responseMessage = document.getElementById("response-message");
     const uploadInput = document.getElementById("upload-input");
     const fileChosen = document.getElementById("file-chosen");
+    const categorySelect = document.getElementById("category-select");
+    const subcategorySelect = document.getElementById("subcategory-select");
+
+    // Update subcategory options based on main category selection
+    window.updateSubcategory = function() {
+        const category = categorySelect.value;
+        subcategorySelect.innerHTML = '<option value="">Select Type</option>';
+        
+        if (category === 'forest') {
+            subcategorySelect.innerHTML += `
+                <option value="deciduous">Deciduous</option>
+                <option value="coniferous">Coniferous</option>
+            `;
+            subcategorySelect.disabled = false;
+        } else if (category === 'crop') {
+            subcategorySelect.innerHTML += `
+                <option value="rice">Rice</option>
+                <option value="wheat">Wheat</option>
+            `;
+            subcategorySelect.disabled = false;
+        } else {
+            subcategorySelect.disabled = true;
+        }
+    };
 
     // Update file-chosen text when files are selected
     uploadInput.addEventListener("change", function () {
@@ -18,7 +42,15 @@ document.addEventListener("DOMContentLoaded", () => {
         responseMessage.innerHTML = "";
         responseMessage.style.display = "none";
 
-        // Get values from number inputs (if using number fields)
+        // Validate category selection
+        if (!categorySelect.value || !subcategorySelect.value) {
+            responseMessage.style.display = "block";
+            responseMessage.style.color = "red";
+            responseMessage.innerHTML = "<p>Please select both category and type.</p>";
+            return;
+        }
+
+        // Get values from number inputs
         const startHour = document.getElementById("start-hour").value.padStart(2, "0");
         const startMinute = document.getElementById("start-minute").value.padStart(2, "0");
         const startSecond = document.getElementById("start-second").value.padStart(2, "0");
@@ -47,14 +79,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Ensure form exists before processing
+        // Rest of the code remains the same...
         if (!uploadForm) {
             console.error("Form not found!");
             return;
         }
-        
 
-        // Ensure at least one file is uploaded
         const formData = new FormData(uploadForm);
         const files = formData.getAll("images");
         if (files.length === 0) {
@@ -64,11 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Add the time values to the form data
         formData.set("start_time", startTime);
         formData.set("end_time", endTime);
 
-        // Make a POST request to the server
         try {
             const response = await fetch("/process-images", {
                 method: "POST",
@@ -76,7 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (response.ok) {
-                // Trigger file download
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement("a");

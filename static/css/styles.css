@@ -288,3 +288,24 @@
 #upload-input {
     display: none; /* Keeps the input hidden */
 }
+
+.mask-selection {
+  margin: 20px 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mask-selection select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.mask-selection select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}

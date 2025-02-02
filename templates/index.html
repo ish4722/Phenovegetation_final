@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- Previous head section remains the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,10 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    
 </head>
 <body>
     <div class="v88_47">
+        <!-- Previous sections remain the same until the mask-selection div -->
         <div class="v88_2">
             <div class="v88_3"></div>
             <div class="v88_4"></div>
@@ -45,25 +46,33 @@
                         </div>
                     </div>
                     
-                    
                     <div class="filters">
                         <span class="v89_65">Remove Particular kind of images:</span>
                         <label><input type="checkbox" name="filters[]" value="blurry"> Blurry</label>
                         <label><input type="checkbox" name="filters[]" value="snowy"> Snowy</label>
                         <label><input type="checkbox" name="filters[]" value="darkened"> Darkened</label>
                     </div>
+                    
+                    <!-- Updated mask selection with hierarchical dropdowns -->
                     <div class="mask-selection">
-                        <select name="mask_needed" id="mask-needed">
-                            <option value="deciduous">Deciduous</option>
-                            <option value="coniferous">Coniferous</option>
+                        <select name="category" id="category-select" onchange="updateSubcategory()">
+                            <option value="">Select Category</option>
+                            <option value="forest">Forest</option>
+                            <option value="crop">Crop</option>
+                        </select>
+                        
+                        <select name="mask_needed" id="subcategory-select" disabled>
+                            <option value="">Select Type</option>
                         </select>
                     </div>
+
                     <div class="upload-box">
                         <span class="v89_71">Upload the input Images:</span>
                         <label for="upload-input" class="custom-file-label v89_72">Choose Files</label>
                         <input type="file" name="images" id="upload-input" multiple>
                         <span id="file-chosen" class="v89_73">No files chosen</span>
                     </div>
+                    
                     <div class="v89_55">
                         <div class="v89_56"></div>
                         <button type="button" id="generate-btn" class="v89_57">Generate Excel File</button>
