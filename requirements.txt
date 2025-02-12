@@ -1,3 +1,10 @@
-tensorflow==2.12.0
-keras==2.8.0 
-efficientnet==1.1.1
+absl-py==2.1.0
+appdirs==1.4.4
+efficientnet==1.0.0
+keras==3.7.0
+Keras-Applications==1.0.8
+opencv-python==4.10.0.84
+segmentation-models==1.0.1
+tensorboard-data-server==0.7.2
+tensorflow==2.18.0
+torch==2.6.0
