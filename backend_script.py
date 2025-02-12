@@ -164,9 +164,9 @@ def main(img_dir_path, str_time, end_tim, filtrs, mask_name):
             probs = torch.softmax(output, dim=1)
             mask = torch.argmax(probs, dim=1).squeeze(0)
 
-        if mask_need == "coniferous":
+        if mask_need == "coniferous" or "rice":
             selected_mask = (mask == 1).numpy()
-        elif mask_need == "deciduous":
+        elif mask_need == "deciduous" or "wheat":
             selected_mask = (mask == 0).numpy()
         else:
             raise ValueError(f"Invalid mask_name: {mask_need}")
